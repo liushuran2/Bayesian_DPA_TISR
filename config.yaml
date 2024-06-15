@@ -1,19 +1,15 @@
 #model settings
-mid_channels: 64                           #number of channels in residual blocks
-extraction_nblocks: 5                         #number of residual blocks in the extraction module
-propagation_nblocks: 5                        #number of residual blocks in the propagation module
-reconstruction_nblocks: 5                          #number of residual blocks in the reconstruction module
-factor: 2                      
-bayesian: True
+mid_channels: 64               #number of channels in residual blocks
+extraction_nblocks: 5          #number of residual blocks in the extraction module
+propagation_nblocks: 5         #number of residual blocks in the propagation module
+reconstruction_nblocks: 5      #number of residual blocks in the reconstruction module
+factor: 2                      #scale factor
+bayesian: True                 #use bayesian DPA-TISR or non-bayesian
 
 #dataset settings
 train_dataset_path: /data/wyw/lsr/PKMO_train_step4_VSR_selected.h5        #dataset path
 valid_dataset_path: /data/wyw/lsr/PKMO_valid_step4_VSR.h5      #dataset path
 test_dataset_path: /data/wyw/lsr/Lyso_train_step2_VSR_big.h5         #dataset path
-inference_dataset_path: /data/wyw/lsr/PKMO_cell1.h5
-patch_size: 128                             #patch size for training, should be the same as width/height above
-num_workers: 0                             #number of threads in the dataloader
-
 
 #training settings
 batchsize: 3                              #batchsize
@@ -22,4 +18,9 @@ checkpoint_name: checkptx2.pt             #filename of checkpoint
 hot_start: 0                              #0 for training from scratcsh, 1 for resume from a checkpoint
 hot_start_checkpt: checkpt/F-actin/checkptx2.pt     #checkpoint used to resume training, if hot_start=0, this is ignored
 epoch: 36000                               #number of training epochs, set to a large number and manually stop training if needed
-N_save_checkpt: 200                       #840save checkpoint every N_save_checkpt iterations
+N_save_checkpt: 200                       #save checkpoint every N_save_checkpt iterations
+tensorboard_folder: tensorboard/F-actin
+
+#inference settings
+inference_checkpt: checkpt/F-actin/checkptx2.pt     #checkpoint of testing
+epsilon: 0.04

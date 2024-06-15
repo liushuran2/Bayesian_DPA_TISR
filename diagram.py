@@ -72,8 +72,6 @@ def diag_torch(n_bins, confidence, accuracy):
     bin_confidences = bin_confidences[non_zero] / bin_total[non_zero]
     bin_corrects = bin_corrects[non_zero] / bin_total[non_zero]
     bin_ratio = bin_total[non_zero] / torch.sum(bin_total[non_zero])
-    # ECE = torch.square(bin_confidences - bin_corrects)
-    # ECE = torch.mean(ECE)
     ECE = torch.dot(torch.abs(torch.squeeze(bin_confidences) - torch.squeeze(bin_corrects)), torch.squeeze(bin_ratio))
 
     return ECE

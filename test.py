@@ -58,12 +58,12 @@ if config['bayesian']:
     num_dropout_ensembles = 6
 else:
     num_dropout_ensembles = 1
-checkpt=torch.load(config['hot_start_checkpt'])
+checkpt=torch.load(config['inference_checkpt'])
 model.module.load_state_dict(checkpt)
 
 loss_fn = loss.lossfun()
 
-test_dataset = TestDataset(config['test_dataset_path'], patch_size=config['patch_size'], scale=2)
+test_dataset = TestDataset(config['test_dataset_path'], scale=2)
 dataloader = DataLoader(dataset=test_dataset,
                         batch_size=1,
                         shuffle=False,
@@ -89,11 +89,11 @@ with torch.no_grad():
             for i in range(num_dropout_ensembles):
                 oup, flows_forward, flows_backward = model(inp)
                 oup = oup[:,3,:,:,:]
-                SR_y = np.flip(oup[0, 0:1, :, :].permute(1, 2, 0).data.cpu().numpy(),2)
+                SR_y = oup[0, 0:1, :, :].permute(1, 2, 0).data.cpu().numpy()
                 SR_y = SR_y.astype(np.float32)
                 SR_y = SR_y.squeeze(2)
                 if config['bayesian']:
-                    std_y = np.flip(oup[0, 1:2, :, :].permute(1, 2, 0).data.cpu().numpy(),2)
+                    std_y = oup[0, 1:2, :, :].permute(1, 2, 0).data.cpu().numpy()
                     std_y = std_y.astype(np.float32)
                     std_y = std_y.squeeze(2)
                 mean[i, :, :] = SR_y
@@ -125,13 +125,8 @@ with torch.no_grad():
             psnr_list.append(calc_psnr(SR_result, gt))
             ssim_list.append(calc_ssim(SR_result, gt))
 
-            Error = np.abs(linear_trans(gt, SR_result) - gt)
-
             SR_result = Image.fromarray(SR_result)
             SR_result.save('result/SR/super_res{}.tif'.format(str(count)))
-
-            Error = Image.fromarray(Error)
-            Error.save('result/Error/Error{}.tif'.format(str(count)))
 
             if config['bayesian']:
                 data_uncertainty_result = Image.fromarray(data_uncertainty_result)
@@ -165,4 +160,4 @@ if config['bayesian']:
     ax.set_title('Reliability Diagram')
     ax.legend()
     plt.show()
-    plt.savefig('fig.png')
+    plt.savefig('result/Reliable-diagram.png')

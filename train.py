@@ -23,6 +23,7 @@ from mmedit.models.backbones.sr_backbones import DPATISR
 
 
 os.makedirs(config['checkpoint_folder'], exist_ok=True)
+os.makedirs(config['tensorboard_folder'], exist_ok=True)
 model = torch.nn.DataParallel(DPATISR(mid_channels=config['mid_channels'],
                  extraction_nblocks=config['extraction_nblocks'],
                  propagation_nblocks=config['propagation_nblocks'],
@@ -36,7 +37,7 @@ if config['hot_start']:
 
 loss_fn = loss.lossfun()
 
-writer = SummaryWriter(log_dir=config['checkpoint_folder'])
+writer = SummaryWriter(log_dir=config['tensorboard_folder'])
 
 train_dataset = TrainDataset(config['train_dataset_path'], patch_size=config['patch_size'], scale=config['factor'])
 dataloader = DataLoader(dataset=train_dataset,
@@ -44,7 +45,7 @@ dataloader = DataLoader(dataset=train_dataset,
                         shuffle=True,
                         num_workers=config['num_workers'],
                         pin_memory=True)
-test_dataset = TestDataset(config['valid_dataset_path'], patch_size=config['patch_size'], scale=config['factor'])
+test_dataset = TestDataset(config['valid_dataset_path'], scale=config['factor'])
 test_dataloader = DataLoader(dataset=test_dataset,
                         batch_size=1,
                         shuffle=False,

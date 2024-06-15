@@ -7,7 +7,7 @@ import h5py
 import cv2
 
 class TestDataset(Dataset):
-    def __init__(self, h5_file, patch_size, scale):
+    def __init__(self, h5_file, scale):
         super(TestDataset, self).__init__()
         self.h5_file = h5_file
         self.scale = scale
