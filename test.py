@@ -5,6 +5,7 @@ import math
 import matplotlib.pyplot as plt
 from tqdm import tqdm
 from PIL import Image
+import os
 from skimage.metrics import structural_similarity as ssim
 parser = argparse.ArgumentParser(description='Input a config file.')
 parser.add_argument('--config', help='Config file path')
@@ -38,13 +39,23 @@ def linear_trans(gt,pre):
 def calc_psnr(sr, hr, scale=3, rgb_range=255, dataset=None):
     sr = linear_trans(hr, sr)
     diff = (sr - hr)
-    diff = diff.cpu().detach().numpy()
     mse = np.mean((diff) ** 2)
     return -10 * math.log10(mse)
 
 def calc_ssim(sr,hr):
     sr = linear_trans(hr, sr)
     return ssim(sr,hr)
+
+def mkdir(path):
+ 
+	folder = os.path.exists(path)
+	if not folder:                   
+		os.makedirs(path)
+mkdir(config['save_path'])
+mkdir(config['save_path'] + '/Confidence')
+mkdir(config['save_path'] + '/Data')
+mkdir(config['save_path'] + '/Model')
+mkdir(config['save_path'] + '/SR')
 
 epsilon = 0.04
 model = torch.nn.DataParallel(DPATISR(mid_channels=config['mid_channels'],
@@ -87,7 +98,7 @@ with torch.no_grad():
             gt = gt.float().cuda()
             gt = gt[:,3,:,:,:]
             for i in range(num_dropout_ensembles):
-                oup, flows_forward, flows_backward = model(inp)
+                oup = model(inp)
                 oup = oup[:,3,:,:,:]
                 SR_y = oup[0, 0:1, :, :].permute(1, 2, 0).data.cpu().numpy()
                 SR_y = SR_y.astype(np.float32)
@@ -126,18 +137,18 @@ with torch.no_grad():
             ssim_list.append(calc_ssim(SR_result, gt))
 
             SR_result = Image.fromarray(SR_result)
-            SR_result.save('result/SR/super_res{}.tif'.format(str(count)))
+            SR_result.save(config['save_path'] + '/SR/super_res{}.tif'.format(str(count)))
 
             if config['bayesian']:
                 data_uncertainty_result = Image.fromarray(data_uncertainty_result)
-                data_uncertainty_result.save('result/Data/datauncer{}.tif'.format(str(count)))
+                data_uncertainty_result.save(config['save_path'] + '/Data/datauncer{}.tif'.format(str(count)))
 
                 model_uncertainty_result = Image.fromarray(model_uncertainty_result)
-                model_uncertainty_result.save('result/Model/modeluncer{}.tif'.format(str(count)))
+                model_uncertainty_result.save(config['save_path'] + '/Model/modeluncer{}.tif'.format(str(count)))
 
-                confidence = interval_confidence(mean, data_uncertainty)
+                confidence = interval_confidence(mean, data_uncertainty, config['epsilon'], num_dropout_ensembles)
                 confidence = Image.fromarray(confidence)
-                confidence.save('result/Confidence/confidence{}.tif'.format(str(count)))
+                confidence.save(config['save_path'] + '/Confidence/confidence{}.tif'.format(str(count)))
 
     if config['bayesian']:
         non_zero = bin_totals.nonzero()

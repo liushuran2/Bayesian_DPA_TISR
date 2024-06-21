@@ -119,7 +119,7 @@ def finetune(model, loss_fn, train_dataset, test_dataset, epsilon=0.04, alpha=0.
                             num_workers=config['num_workers'],
                             pin_memory=True)
     count = 0
-    for epoch in range(0, 30):
+    for epoch in range(0, config['finetune_epoch']):
         model.train()
         with tqdm(dataloader, desc="Finetuning MANA") as tepoch:
             for inp, gt in tepoch:

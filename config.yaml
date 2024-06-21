@@ -1,19 +1,21 @@
 #model settings
 mid_channels: 64               #number of channels in residual blocks
-extraction_nblocks: 5          #number of residual blocks in the extraction module
-propagation_nblocks: 5         #number of residual blocks in the propagation module
+extraction_nblocks: 3          #number of residual blocks in the extraction module
+propagation_nblocks: 3         #number of residual blocks in the propagation module
 reconstruction_nblocks: 5      #number of residual blocks in the reconstruction module
-factor: 2                      #scale factor
+factor: 3                      #scale factor
 bayesian: True                 #use bayesian DPA-TISR or non-bayesian
 
 #dataset settings
-train_dataset_path: /data/wyw/lsr/PKMO_train_step4_VSR_selected.h5        #dataset path
-valid_dataset_path: /data/wyw/lsr/PKMO_valid_step4_VSR.h5      #dataset path
-test_dataset_path: /data/wyw/lsr/Lyso_train_step2_VSR_big.h5         #dataset path
+train_dataset_path:         #dataset path
+valid_dataset_path:         #dataset path
+test_dataset_path: dataset/F-actin.h5         #dataset path
+num_workers: 0              #num_workers
 
 #training settings
 batchsize: 3                              #batchsize
-checkpoint_folder: checkpt/F-actin        #the folder to save checkpoint
+patch_size: 128                           #patch_size
+checkpoint_folder: checkpt/Ensconsin      #the folder to save checkpoint
 checkpoint_name: checkptx2.pt             #filename of checkpoint
 hot_start: 0                              #0 for training from scratcsh, 1 for resume from a checkpoint
 hot_start_checkpt: checkpt/F-actin/checkptx2.pt     #checkpoint used to resume training, if hot_start=0, this is ignored
@@ -22,5 +24,8 @@ N_save_checkpt: 200                       #save checkpoint every N_save_checkpt 
 tensorboard_folder: tensorboard/F-actin
 
 #inference settings
-inference_checkpt: checkpt/F-actin/checkptx2.pt     #checkpoint of testing
-epsilon: 0.04
+save_path: result
+inference_checkpt: checkpt/F-actin_checkptx2.pt     #checkpoint of testing
+epsilon: 0.04                                       #hyperparameter of loss function
+finetune_epoch: 30                                  #number of finetuning epochs
+

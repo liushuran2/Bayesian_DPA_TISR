@@ -2,6 +2,7 @@
 import argparse
 import yaml
 import os
+os.environ["CUDA_VISIBLE_DEVICES"] = '5'
 from tqdm import tqdm
 import torch.nn.functional as F
 import warnings
@@ -96,8 +97,6 @@ for epoch in range(0, config['epoch']):
                             loss = loss.mean()
                             valid_list.append(loss.data.cpu())
                 writer.add_scalar('Valid/loss', torch.mean(torch.stack(valid_list)), count / config['N_save_checkpt'])
-                if count % (config['N_save_checkpt'] * 10) == 0:
-                    writer.add_image('Valid/example', oup[0,0,0:1,::], count)
                 if torch.mean(torch.stack(valid_list)) < max(best_valid):
                     idx = best_valid.index(max(best_valid))
                     best_valid[idx] = torch.mean(torch.stack(valid_list))

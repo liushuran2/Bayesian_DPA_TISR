@@ -49,9 +49,9 @@ This repository is for Bayesian DPA-TISR introduced in the following paper:
 ## 🏰 Model Zoo
 | Models                            | Cell Structure  |Download                                  |
 | --------------------------------- |:--------- | :------------------------------------------- |
-| Bayesian DPA-TISR                 | Microtubules  |  [Figshare repository](https://doi.org/10.5281/zenodo.7818030)                                              |
-| Bayesian DPA-TISR                 | F-actin     |    [Figshare repository](https://zenodo.org/record/8332544)  
-| Bayesian DPA-TISR                 | Mitochondria    |    [Figshare repository](https://zenodo.org/record/8332544)  
+| Bayesian DPA-TISR                 | Microtubules  |  [Zenodo repository](https://doi.org/10.5281/zenodo.12207252)                                              |
+| Bayesian DPA-TISR                 | F-actin     |    [Zenodo repository](https://doi.org/10.5281/zenodo.12207252)  
+| Bayesian DPA-TISR                 | Mitochondria    |    [Zenodo repository](https://doi.org/10.5281/zenodo.12207252)  
 
 Place the pre-trained model into `./checkpt`.
 
@@ -63,7 +63,7 @@ Place the pre-trained model into `./checkpt`.
 Before inference, you should have trained your own model or downloaded our pre-trained model. 
 
 ### 2. Edit confiuration
-Before inference with pre-trained model, please carefully edit the [config.yaml](https://github.com/liushuran2/Bayesian_DPA_TISR/blob/main/config.yaml) file. Change the *inference_checkpt* line to the actual path of pre-trained model. Change *test_dataset_path* line to the actual path of test data(h5 file, detailed in [**Dataset**](#-Dataset)).
+Before inference with pre-trained model, please carefully edit the [config.yaml](https://github.com/liushuran2/Bayesian_DPA_TISR/blob/main/config.yaml) file. Change the *inference_checkpt* line to the actual path of pre-trained model. Change *test_dataset_path* line to the actual path of test data(h5 file, detailed in [**Dataset**](#-Dataset),eg `./dataset/F-actin.h5`).
 
 ### 3. Test models
 ```python
@@ -76,7 +76,7 @@ python test.py --config config.yaml
 ## 💻 Training 
 
 ### 1. Prepare the data 
-You can use your own data or download [BioTISR]() below(detailed in [**Dataset**](#-dataset)). 
+You can use your own data or download BioTISR below(detailed in [**Dataset**](#-dataset)). 
 
 ### 2. Edit confiuration
 Before training, please carefully edit the [config.yaml](https://github.com/liushuran2/Bayesian_DPA_TISR/blob/main/config.yaml) file. Some **must-change** parameters are as follows:
@@ -93,7 +93,7 @@ python train.py --config config.yaml
 
 The visualization of training procedure is also provided. Run the following command:
 ```python
-tensorboard --logdir=checkpt --port=6006 --host='localhost'
+tensorboard --logdir=tensorboard --port=6006 --host='localhost'
 ```
 
 ### 4. Confidence correction
@@ -103,7 +103,7 @@ python finetune.py --config config.yaml
 ```
 
 ## 🎨 Dataset
-We acquired an extensive TISR dataset ([BioTISR]()), of five different biological structures: clathrin-coated pits (CCPs), lysosomes (Lyso), outer mitochondrial membranes (Mito), microtubules (MTs), and F-actin filaments.
+We acquired an extensive TISR dataset (BioTISR), of five different biological structures: clathrin-coated pits (CCPs), lysosomes (Lyso), outer mitochondrial membranes (Mito), microtubules (MTs), and F-actin filaments.
 
 BioTISR is now freely available, aiming to provide a high-quality dataset for the community of time-lapse bio-image super-resolution algorithm and advanced SIM reconstruction algorithm developers.
 
