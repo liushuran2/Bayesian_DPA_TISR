@@ -70,7 +70,7 @@ for epoch in range(0, config['epoch']):
             optimizer.zero_grad()
             oup = model(inp)
             
-            loss = loss_fn(gt[:,:,:,:,:], oup[:,:,:,:,:], config['bayesian'])
+            loss = loss_fn(gt, oup, config['bayesian'])
             l1loss = F.l1_loss(gt[:,:,0,:,:], oup[:,:,0,:,:])
             loss = loss.mean()
             loss.backward()

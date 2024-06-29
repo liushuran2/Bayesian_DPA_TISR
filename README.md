@@ -37,7 +37,7 @@ This repository is for Bayesian DPA-TISR introduced in the following paper:
    ```bash
     git clone https://github.com/liushuran2/Bayesian_DPA_TISR.git
     ```
-2. Create a virtual environment and install PyTorch and other dependencies. **If your CUDA maximum version is < 11.3**, please select the correct Pytorch version that matches your CUDA version from [https://pytorch.org/get-started/previous-versions/](https://pytorch.org/get-started/previous-versions/). 
+2. Create a virtual environment and install PyTorch and other dependencies. **If your CUDA maximum version is < 11.3**, please select the correct Pytorch version that matches your CUDA version from [https://pytorch.org/get-started/previous-versions/](https://pytorch.org/get-started/previous-versions/). The time for installing is usually less than 10 minutes.
 
  ```bash
     $ conda create -n DPATISR python=3.8
@@ -49,9 +49,9 @@ This repository is for Bayesian DPA-TISR introduced in the following paper:
 ## 🏰 Model Zoo
 | Models                            | Cell Structure  |Download                                  |
 | --------------------------------- |:--------- | :------------------------------------------- |
-| Bayesian DPA-TISR                 | Microtubules  |  [Zenodo repository](https://doi.org/10.5281/zenodo.12207252)                                              |
-| Bayesian DPA-TISR                 | F-actin     |    [Zenodo repository](https://doi.org/10.5281/zenodo.12207252)  
-| Bayesian DPA-TISR                 | Mitochondria    |    [Zenodo repository](https://doi.org/10.5281/zenodo.12207252)  
+| Bayesian DPA-TISR                 | Microtubules  |  [Zenodo repository](https://doi.org/10.5281/zenodo.12593629)                                              |
+| Bayesian DPA-TISR                 | F-actin     |    [Zenodo repository](https://doi.org/10.5281/zenodo.12593629)  
+| Bayesian DPA-TISR                 | Mitochondria    |    [Zenodo repository](https://doi.org/10.5281/zenodo.12593629)  
 
 Place the pre-trained model into `./checkpt`.
 

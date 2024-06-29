@@ -9,8 +9,12 @@ parser.add_argument('--config', help='Config file path')
 args = parser.parse_args()
 f = open(args.config)
 config = yaml.load(f, Loader=yaml.FullLoader)
-
+def mkdir(path):
+	folder = os.path.exists(path)
+	if not folder:                   
+		os.makedirs(path)
 scale = config['factor']
+mkdir(config['save_path'])
 import numpy as np
 from torch.utils.data import DataLoader
 from Traindataset import TrainDataset
@@ -61,7 +65,7 @@ def test(model, test_dataset, patch_size=64, epsilon=0.1, num_dropout_ensembles=
         enable_dropout(model)
         with tqdm(dataloader, desc="Training MANA") as tepoch:
             for inp, gt in tepoch:
-                mean = np.ndarray((num_dropout_ensembles, scale*patch_size, scale*patch_size)) #这里要改
+                mean = np.ndarray((num_dropout_ensembles, scale*patch_size, scale*patch_size)) 
                 data_uncertainty = np.ndarray((num_dropout_ensembles, scale*patch_size, scale*patch_size))
                 count += 1
                 inp = inp.float().cuda()
@@ -112,7 +116,7 @@ def test(model, test_dataset, patch_size=64, epsilon=0.1, num_dropout_ensembles=
     print(ECE)
     return ECE, np.sum(bin_confidences - bin_corrects)
 
-def finetune(model, loss_fn, train_dataset, test_dataset, epsilon=0.04, alpha=0.1, lamda=0.5, n_bins = 50):
+def finetune(model, loss_fn, train_dataset, test_dataset, epsilon=0.04, alpha=0.1, k=0.5, n_bins = 50):
     dataloader = DataLoader(dataset=train_dataset,
                             batch_size=config['batchsize'],
                             shuffle=True,
@@ -123,21 +127,21 @@ def finetune(model, loss_fn, train_dataset, test_dataset, epsilon=0.04, alpha=0.
         model.train()
         with tqdm(dataloader, desc="Finetuning MANA") as tepoch:
             for inp, gt in tepoch:
-                tepoch.set_description(f"Finetuning MANA--Epoch {epoch} Lamda {lamda}")
+                tepoch.set_description(f"Finetuning MANA--Epoch {epoch} K {k}")
                 if count==0:
                     optimizer = torch.optim.Adam(filter(lambda p: p.requires_grad, model.module.parameters()), lr=1e-6, betas=(0.5, 0.999))
-                    scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=30, eta_min=0, last_epoch=-1)
+                    scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=config['finetune_epoch'], eta_min=0, last_epoch=-1)
 
                 inp = inp.float().cuda()
                 gt = gt.float().cuda()
                 
                 optimizer.zero_grad()
                 oup = model(inp)
-                oup = oup[:,3,::]
-                gt = gt[:,3,::]
+                oup = oup[:,3:4,::]
+                gt = gt[:,3:4,::]
 
-                confidence = interval_confidence(oup[:,0:1,:,:], oup[:,1:2,:,:], epsilon=epsilon)
-                acc = torch.logical_and(oup[:,0:1,:,:] > gt - epsilon, oup[:,0:1,:,:] < gt + epsilon)
+                confidence = interval_confidence(oup[:,:,0:1,:,:], oup[:,:,1:2,:,:], epsilon=epsilon)
+                acc = torch.logical_and(oup[:,:,0:1,:,:] > gt - epsilon, oup[:,:,0:1,:,:] < gt + epsilon)
                 acc = acc.type(torch.FloatTensor).float().cuda()
                 Av_confidence = torch.mean(confidence)
                 
@@ -145,89 +149,90 @@ def finetune(model, loss_fn, train_dataset, test_dataset, epsilon=0.04, alpha=0.
                 accuracy = acc.reshape(-1)
                 ECE = diag_torch(n_bins, confidence, accuracy)
                 
-                loss_L1 = loss_fn(gt, oup)
+                loss_L1 = loss_fn(gt, oup,config['bayesian'])
                 loss_L1 = loss_L1.mean()
                 Av_confidence = Av_confidence.mean()
                 ECE = ECE.mean()
-                loss = loss_L1 * alpha + (1-alpha) * (ECE + Av_confidence * lamda)
+                loss = loss_L1 * alpha + (1-alpha) * (ECE + Av_confidence * k)
                 loss.backward()
                 optimizer.step()
                 count += 1
         scheduler.step()
-    ECE, absECE = test(model, test_dataset, 512, epsilon)
-    torch.save(model.module.state_dict(), config['checkpoint_folder'] +'/{}'.format(str(int(lamda*100))) + config['checkpoint_name'])
-    return ECE, absECE
+    absECE, rECE = test(model, test_dataset, 512, epsilon)
+    torch.save(model.module.state_dict(), config['checkpoint_folder'] +'/{}'.format(str(int(k*100))) + config['checkpoint_name'])
+    return absECE, rECE
 epsilon = config['epsilon']
 os.makedirs(config['checkpoint_folder'], exist_ok=True)
 model = torch.nn.DataParallel(DPATISR(mid_channels=config['mid_channels'],
                  extraction_nblocks=config['extraction_nblocks'],
                  propagation_nblocks=config['propagation_nblocks'],
                  reconstruction_nblocks=config['reconstruction_nblocks'],
-                 factor=config['factor'])).cuda()
+                 factor=config['factor'],
+                  bayesian=config['bayesian'])).cuda()
 
-checkpt=torch.load(config['hot_start_checkpt'])
+checkpt=torch.load(config['inference_checkpt'])
 model.module.load_state_dict(checkpt)
 
 train_dataset = TrainDataset(config['train_dataset_path'], patch_size=config['patch_size'], scale=config['factor'])
 test_dataset = TestDataset(config['valid_dataset_path'], scale=config['factor'])
-ECE, absECE = test(model, test_dataset, patch_size=512, epsilon=epsilon)
-if absECE > 0:
+absECE, rECE = test(model, test_dataset, patch_size=512, epsilon=epsilon)
+if rECE > 0:
     start = 0.5
 else:
     start = -0.5
 
-lamda2 = start
+k2 = start
 deltamag = 0.1
-lamda_list = []
+k_list = []
 absECE_list = []
 loss_fn = loss.lossfun()
 amp2,_ = finetune(model, loss_fn, train_dataset, test_dataset,
-            epsilon=epsilon, alpha=0.1, lamda=lamda2)
-lamda_list.append(lamda2)
+            epsilon=epsilon, alpha=0.1, k=k2)
+k_list.append(k2)
 absECE_list.append(amp2)
 
-mag = lamda2 - deltamag * math.copysign(1, lamda2)
-lamda3 = mag
+mag = k2 - deltamag * math.copysign(1, k2)
+k3 = mag
 
 model.module.load_state_dict(checkpt)
 amp3,_ = finetune(model, loss_fn, train_dataset, test_dataset,
-                epsilon=epsilon, alpha=0.1, lamda=lamda3)
+                epsilon=epsilon, alpha=0.1, k=k3)
 
 if amp3 < amp2:
     while amp3 < amp2:
         amp1 = amp2
-        lamda1 = lamda2
+        k1 = k2
         amp2 = amp3
-        lamda2 = lamda3
+        k2 = k3
         mag -= deltamag * math.copysign(1, start)
-        lamda3 = mag
+        k3 = mag
         model.module.load_state_dict(checkpt)
         amp3,_ = finetune(model, loss_fn, train_dataset, test_dataset,
-                epsilon=epsilon, alpha=0.1, lamda=lamda3)
+                epsilon=epsilon, alpha=0.1, k=k3)
 else:
     mag = start
     a = amp3
     amp3 = amp2
     amp2 = a
-    a = lamda3
-    lamda3 = lamda2
-    lamda2 = a
+    a = k3
+    k3 = k2
+    k2 = a
     while amp3 < amp2:
         amp1 = amp2
-        lamda1 = lamda2
+        k1 = k2
         amp2 = amp3
-        lamda2 = lamda3
+        k2 = k3
         mag += deltamag * math.copysign(1, start)
-        lamda3 = mag
+        k3 = mag
         model.module.load_state_dict(checkpt)
         amp3,_ = finetune(model, loss_fn, train_dataset, test_dataset,
-                epsilon=epsilon, alpha=0.1, lamda=lamda3)
+                epsilon=epsilon, alpha=0.1, k=k3)
 
-mag = fitxyparabola(lamda1, amp1, lamda2, amp2, lamda3, amp3)
+mag = fitxyparabola(k1, amp1, k2, amp2, k3, amp3)
 print(mag)
 model.module.load_state_dict(checkpt)
-absECE, ECE = finetune(model, loss_fn, train_dataset, test_dataset, 
-                epsilon=epsilon, alpha=0.1, lamda=mag)
+absECE, rECE = finetune(model, loss_fn, train_dataset, test_dataset, 
+                epsilon=epsilon, alpha=0.1, k=mag)
 torch.save(model.module.state_dict(), config['checkpoint_folder'] +'/' + config['checkpoint_name'])
 
 
