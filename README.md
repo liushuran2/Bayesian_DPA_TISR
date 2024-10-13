@@ -31,29 +31,61 @@ This repository is for Bayesian DPA-TISR introduced in the following paper:
   - Pytorch 1.12.1
   - NVIDIA GPU (GeForce RTX 3090) 
 
-### Install
-1. Clone this repository using the following command.
+### Quick installation
+If you have already set up a PyTorch environment, no matter using conda or pip, you can start from **step 3**.
 
+**Step 0.**
+Download and install Anaconda from [official website](https://www.anaconda.com/download/).
+
+**Step 1.**
+Clone this repository using the following command.
    ```bash
     git clone https://github.com/liushuran2/Bayesian_DPA_TISR.git
-    ```
-2. Create a virtual environment and install PyTorch and other dependencies. **If your CUDA maximum version is < 11.3**, please select the correct Pytorch version that matches your CUDA version from [https://pytorch.org/get-started/previous-versions/](https://pytorch.org/get-started/previous-versions/). The time for installing is usually less than 10 minutes.
+  ```
+
+**Step 2.**
+Create a virtual environment and install PyTorch. **If your CUDA maximum version is < 11.3**, please select the correct Pytorch version that matches your CUDA version from [https://pytorch.org/get-started/previous-versions/](https://pytorch.org/get-started/previous-versions/). The time for installing is usually less than 10 minutes.
 
  ```bash
     $ conda create -n DPATISR python=3.8
     $ conda activate DPATISR
     $ pip install torch==1.12.1+cu113 torchvision==0.13.1+cu113 torchaudio==0.12.1 --extra-index-url https://download.pytorch.org/whl/cu113
+```
+**Step 3.**
+To install other dependencies used in our code, simply run the following command.
+ ```bash
     $ pip install -r requirements.txt
 ```
 
-## 🏰 Model Zoo
-| Models                            | Cell Structure  |Download                                  |
-| --------------------------------- |:--------- | :------------------------------------------- |
-| Bayesian DPA-TISR                 | Microtubules  |  [Zenodo repository](https://doi.org/10.5281/zenodo.12593629)                                              |
-| Bayesian DPA-TISR                 | F-actin     |    [Zenodo repository](https://doi.org/10.5281/zenodo.12593629)  
-| Bayesian DPA-TISR                 | Mitochondria    |    [Zenodo repository](https://doi.org/10.5281/zenodo.12593629)  
+### Version of CUDA
 
-Place the pre-trained model into `./checkpt`.
+When installing PyTorch in **Step 2**, you need to specify the version of CUDA.
+If you are not clear on which to choose, follow our recommendations:
+
+1. For Ampere-based NVIDIA GPUs, such as GeForce 30 series and NVIDIA A100, **CUDA 11 is a must**.
+2. For older NVIDIA GPUs, CUDA 11 is backward compatible, but CUDA 10.2 offers better compatibility and is more lightweight.
+
+Please also make sure the GPU driver satisfies the minimum version requirements.
+See [this table](https://docs.nvidia.com/cuda/cuda-toolkit-release-notes/index.html#cuda-major-component-versions__table-cuda-toolkit-driver-versions) for more information.
+
+### Install without Conda
+
+Though we highly recommend using conda to create environments and install PyTorch, it is viable to install PyTorch only with pip, for example, with the following command,
+
+```shell
+pip3 install torch torchvision
+```
+
+However, an `--extra-index-url` or `-f` option is usually required to specify the CPU / CUDA version.
+See [PyTorch website](https://pytorch.org/get-started/locally/) for more details.
+## 🏰 Model Zoo
+| Scale factor    | Cell Structure  |Download                |
+| ---------------|:--------- | :------------------------------------------- |
+| 2  | Microtubules  |  [Zenodo repository](https://doi.org/10.5281/zenodo.12593629)                                              |
+| 3 | F-actin     |    [Zenodo repository](https://doi.org/10.5281/zenodo.12593629)  
+| 2  | Mitochondria    |    [Zenodo repository](https://doi.org/10.5281/zenodo.12593629)  
+
+Download the pre-trained models and place them into `./checkpt`.
 
 
 ## ⚡ Inference
@@ -63,7 +95,10 @@ Place the pre-trained model into `./checkpt`.
 Before inference, you should have trained your own model or downloaded our pre-trained model. 
 
 ### 2. Edit confiuration
-Before inference with pre-trained model, please carefully edit the [config.yaml](https://github.com/liushuran2/Bayesian_DPA_TISR/blob/main/config.yaml) file. Change the *inference_checkpt* line to the actual path of pre-trained model. Change *test_dataset_path* line to the actual path of test data(h5 file, detailed in [**Dataset**](#-Dataset),eg `./dataset/F-actin.h5`).
+Before inference with pre-trained model, please carefully edit the [config.yaml](https://github.com/liushuran2/Bayesian_DPA_TISR/blob/main/config.yaml) file. 
+* Change the *inference_checkpt* line to the actual path of pre-trained model. 
+* Change *test_dataset_path* line to the actual path of test data(h5 file, detailed in [**Dataset**](#-Dataset),eg `./dataset/F-actin.h5`).
+* Other key confiurations are *bayesian* and *factor* etc. Please keep them the same as in training or pretraining.
 
 ### 3. Test models
 ```python
@@ -80,8 +115,9 @@ You can use your own data or download BioTISR below(detailed in [**Dataset**](#-
 
 ### 2. Edit confiuration
 Before training, please carefully edit the [config.yaml](https://github.com/liushuran2/Bayesian_DPA_TISR/blob/main/config.yaml) file. Some **must-change** parameters are as follows:
-* train_dataset_path and valid_dataset_path (the path of your training data and validation data(*.h5 file))
-* checkpoint_folder and checkpoint_name (thelocation that checkpoint will be saved in)
+* *train_dataset_path* and *valid_dataset_path* (the path of your training data and validation data(*.h5 file, detailed in [**Dataset**](#-Dataset))
+* *checkpoint_folder* and *checkpoint_name* (the location that checkpoint will be saved in)
+* *tensorboard_folder* (the location that tensorboard log file will be saved in for visualization)
 
 Other key parameter are presented in [config.yaml](https://github.com/liushuran2/Bayesian_DPA_TISR/blob/main/config.yaml) file with , do not change if you don't know what it is.
 
