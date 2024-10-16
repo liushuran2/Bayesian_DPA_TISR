@@ -143,11 +143,11 @@ We acquired an extensive TISR dataset (BioTISR), of five different biological st
 
 BioTISR is now freely available, aiming to provide a high-quality dataset for the community of time-lapse bio-image super-resolution algorithm and advanced SIM reconstruction algorithm developers.
 
-Scripts for reading **MRC** file are provided with the dataset. Developer are recommended to save the time-lapse bio-sequence as seperate images.
+Scripts for reading **MRC** file are provided with the dataset. 
 
-In this repository, you can find a script named [prepare_data.py](https://github.com/liushuran2/Bayesian_DPA_TISR/blob/main/prepare_data.py) which organizes seperate images into an [hdf5](https://www.hdfgroup.org/solutions/hdf5/) file used in the training and testing for faster loading speed. After changing the loading and saving path, simply run:
+In this repository, you can find a script named [read_mrc.py](https://github.com/liushuran2/Bayesian_DPA_TISR/blob/main/prepare_data.py) which organizes seperate images into an [hdf5](https://www.hdfgroup.org/solutions/hdf5/) file used in the training and testing for faster loading speed. After changing the loading and saving path, simply run:
 ```python
-python prepare_data.py
+python read_mrc.py
 ```
 
 ## &#x1F308; Results
