@@ -2,7 +2,7 @@
 import argparse
 import yaml
 import os
-os.environ["CUDA_VISIBLE_DEVICES"] = '5'
+
 from tqdm import tqdm
 import torch.nn.functional as F
 import warnings
@@ -21,6 +21,7 @@ from Testdataset import TestDataset
 import torch
 import loss
 from mmedit.models.backbones.sr_backbones import DPATISR
+from mmedit_3D.models.backbones.sr_backbones import DPATISR_3D
 
 
 os.makedirs(config['checkpoint_folder'], exist_ok=True)
@@ -31,6 +32,14 @@ model = torch.nn.DataParallel(DPATISR(mid_channels=config['mid_channels'],
                  reconstruction_nblocks=config['reconstruction_nblocks'],
                  factor=config['factor'],
                  bayesian=config['bayesian'])).cuda()
+
+# 3D model
+# model = torch.nn.DataParallel(DPATISR_3D(mid_channels=config['mid_channels'],
+#                  extraction_nblocks=config['extraction_nblocks'],
+#                  propagation_nblocks=config['propagation_nblocks'],
+#                  reconstruction_nblocks=config['reconstruction_nblocks'],
+#                  factor=config['factor'],
+#                  bayesian=False)).cuda()
 
 if config['hot_start']:
     checkpt=torch.load(config['hot_start_checkpt'])
@@ -71,7 +80,7 @@ for epoch in range(0, config['epoch']):
             oup = model(inp)
             
             loss = loss_fn(gt, oup, config['bayesian'])
-            l1loss = F.l1_loss(gt[:,:,0,:,:], oup[:,:,0,:,:])
+            l1loss = F.l1_loss(gt[:,:,0,::], oup[:,:,0,::])
             loss = loss.mean()
             loss.backward()
             loss_list.append(loss.data.cpu())
@@ -93,7 +102,7 @@ for epoch in range(0, config['epoch']):
                             gt = gt.float().cuda()
                             optimizer.zero_grad()
                             oup = model(inp)
-                            loss = loss_fn(gt[:,:,:,:,:], oup[:,:,:,:,:], config['bayesian'])
+                            loss = loss_fn(gt, oup, config['bayesian'])
                             loss = loss.mean()
                             valid_list.append(loss.data.cpu())
                 writer.add_scalar('Valid/loss', torch.mean(torch.stack(valid_list)), count / config['N_save_checkpt'])

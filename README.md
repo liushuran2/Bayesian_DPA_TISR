@@ -57,6 +57,12 @@ To install other dependencies used in our code, simply run the following command
     $ pip install -r requirements.txt
 ```
 
+(Step 4.) For 3D DPA-TISR only, Run:
+ ```bash
+    $ cd dcn
+    $ bash make.sh
+```
+
 ### Version of CUDA
 
 When installing PyTorch in **Step 2**, you need to specify the version of CUDA.
