@@ -141,11 +141,21 @@ python finetune.py --config config.yaml
 ## 🎨 Dataset
 We acquired an extensive TISR dataset (BioTISR), of five different biological structures: clathrin-coated pits (CCPs), lysosomes (Lyso), outer mitochondrial membranes (Mito), microtubules (MTs), and F-actin filaments.
 
-BioTISR is now freely available, aiming to provide a high-quality dataset for the community of time-lapse bio-image super-resolution algorithm and advanced SIM reconstruction algorithm developers.
+Besides, we employed our home-built Multi-SIM system to generate three new 3D time-lapse datasets of microtubule, F-actin, and inner membrane of mitochondria to generate 3D BioTISR.
 
-Scripts for reading **MRC** file are provided with the dataset. 
+BioTISR(3D BioTISR) is now freely available, aiming to provide a high-quality dataset for the community of time-lapse bio-image super-resolution algorithm and advanced SIM reconstruction algorithm developers.
 
-In this repository, you can find a script named [read_mrc.py](https://github.com/liushuran2/Bayesian_DPA_TISR/blob/main/prepare_data.py) which organizes seperate images into an [hdf5](https://www.hdfgroup.org/solutions/hdf5/) file used in the training and testing for faster loading speed. After changing the loading and saving path, simply run:
+Scripts for reading **MRC** file are also provided with the dataset. In this repository, you can find a script named [read_mrc.py](https://github.com/liushuran2/Bayesian_DPA_TISR/blob/main/prepare_data.py) which organizes seperate images into an [hdf5](https://www.hdfgroup.org/solutions/hdf5/) file used in the training and testing for faster loading speed.
+
+Some **must-change** parameters are as follows:
+* *mrc_path*: location of downloaded MRC file
+* *save_path*: the location that h5 data file will be saved in
+* *SNR_flag*: the SNR level og the input noisy WF images, could be 1, 2 or 3,from low SNR to high SNR; if the input data is 3D, choice for this flag is 1 or 2
+*ThreeD_flag*: 0 for 2D data and 1 for 3D data
+* *cell_count_valid*: the number of cells for validation
+
+
+After changing the loading, saving path and other key parameters, simply run:
 ```python
 python read_mrc.py
 ```
