@@ -186,8 +186,6 @@ def readmrc_GTSIM(filename, img_size = 512, timepoints = 7, factor = 2):
         image_GT = np.rot90(image_GT, 1)
         image_GT = image_GT.astype(np.float32)
 
-        plt.imshow(image_GT, cmap='gray')
-        plt.show()
         hr[timepoint - 1,0,::] = image_GT
     return hr
 

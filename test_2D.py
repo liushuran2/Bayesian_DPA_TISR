@@ -17,9 +17,9 @@ from torch.utils.data import DataLoader
 from src.Testdataset_2D import TestDataset
 import torch
 from model_2D.models.backbones.sr_backbones import DPATISR
-from model_3D.models.backbones.sr_backbones import DPATISR_3D
+# from model_3D.models.backbones.sr_backbones import DPATISR_3D
 from src.diagram import reliability_diagram, interval_confidence
-import loss
+from src.loss import lossfun
 def enable_dropout(model):
     """ Function to enable the dropout layers during test-time """
     for m in model.modules():
@@ -73,7 +73,7 @@ else:
 checkpt=torch.load(config['inference_checkpt'])
 model.module.load_state_dict(checkpt)
 
-loss_fn = loss.lossfun()
+loss_fn = lossfun()
 
 test_dataset = TestDataset(config['test_dataset_path'], scale=2)
 dataloader = DataLoader(dataset=test_dataset,

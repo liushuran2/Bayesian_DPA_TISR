@@ -19,7 +19,7 @@ from torch.utils.data import DataLoader
 from src.Traindataset_2D import TrainDataset
 from src.Testdataset_2D import TestDataset
 import torch
-import src.loss
+from src.loss import lossfun
 from model_2D.models.backbones.sr_backbones import DPATISR
 
 os.makedirs(config['checkpoint_folder'], exist_ok=True)
@@ -35,7 +35,7 @@ if config['hot_start']:
     checkpt=torch.load(config['hot_start_checkpt'])
     model.module.load_state_dict(checkpt)
 
-loss_fn = loss.lossfun()
+loss_fn = lossfun()
 
 writer = SummaryWriter(log_dir=config['tensorboard_folder'])
 

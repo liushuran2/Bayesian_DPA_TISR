@@ -5,10 +5,10 @@ import torch.nn as nn
 from mmcv.cnn import constant_init
 # from mmcv.ops import ModulatedDeformConv2d, modulated_deform_conv2d
 
-from mmedit.models.backbones.sr_backbones.basicvsr_net import (
+from model_3D.models.backbones.sr_backbones.basicvsr_net import (
     ResidualBlocksWithInputConv, SPyNet)
-from mmedit.models.common import PixelShufflePack, flow_warp
-from mmedit.models.registry import BACKBONES
+from model_3D.models.common import PixelShufflePack, flow_warp
+from model_3D.models.registry import BACKBONES
 from dcn.modules.deform_conv import DeformConv
 
 @BACKBONES.register_module()

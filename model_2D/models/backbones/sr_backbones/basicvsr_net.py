@@ -5,10 +5,10 @@ import torch.nn.functional as F
 from mmcv.cnn import ConvModule
 from mmcv.runner import load_checkpoint
 
-from mmedit.models.common import (PixelShufflePack, ResidualBlockNoBN,
+from model_2D.models.common import (PixelShufflePack, ResidualBlockNoBN,
                                   flow_warp, make_layer)
-from mmedit.models.registry import BACKBONES
-from mmedit.utils import get_root_logger
+from model_2D.models.registry import BACKBONES
+from model_2D.utils import get_root_logger
 
 
 @BACKBONES.register_module()
