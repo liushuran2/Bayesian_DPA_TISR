@@ -159,7 +159,7 @@ Some **must-change** parameters are as follows:
 * *mrc_path*: location of downloaded MRC file
 * *save_path*: the location that h5 data file will be saved in
 * *SNR_flag*: the SNR level og the input noisy WF images, could be 1, 2 or 3,from low SNR to high SNR; if the input data is 3D, choice for this flag is 1 or 2
-*ThreeD_flag*: 0 for 2D data and 1 for 3D data
+* *ThreeD_flag*: 0 for 2D data and 1 for 3D data
 * *cell_count_valid*: the number of cells for validation
 
 
