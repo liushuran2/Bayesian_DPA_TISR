@@ -16,30 +16,20 @@ f = open(args.config)
 config = yaml.load(f, Loader=yaml.FullLoader)
 
 from torch.utils.data import DataLoader
-from Traindataset import TrainDataset
-from Testdataset import TestDataset
+from src.Traindataset_3D import TrainDataset
+from src.Testdataset_3D import TestDataset
 import torch
-import loss
-from mmedit.models.backbones.sr_backbones import DPATISR
-from mmedit_3D.models.backbones.sr_backbones import DPATISR_3D
-
+import src.loss
+from model_3D.models.backbones.sr_backbones import DPATISR_3D
 
 os.makedirs(config['checkpoint_folder'], exist_ok=True)
 os.makedirs(config['tensorboard_folder'], exist_ok=True)
-model = torch.nn.DataParallel(DPATISR(mid_channels=config['mid_channels'],
+model = torch.nn.DataParallel(DPATISR_3D(mid_channels=config['mid_channels'],
                  extraction_nblocks=config['extraction_nblocks'],
                  propagation_nblocks=config['propagation_nblocks'],
                  reconstruction_nblocks=config['reconstruction_nblocks'],
                  factor=config['factor'],
-                 bayesian=config['bayesian'])).cuda()
-
-# 3D model
-# model = torch.nn.DataParallel(DPATISR_3D(mid_channels=config['mid_channels'],
-#                  extraction_nblocks=config['extraction_nblocks'],
-#                  propagation_nblocks=config['propagation_nblocks'],
-#                  reconstruction_nblocks=config['reconstruction_nblocks'],
-#                  factor=config['factor'],
-#                  bayesian=False)).cuda()
+                 bayesian=False)).cuda()
 
 if config['hot_start']:
     checkpt=torch.load(config['hot_start_checkpt'])

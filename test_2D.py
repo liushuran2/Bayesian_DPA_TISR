@@ -14,10 +14,11 @@ f = open(args.config)
 config = yaml.load(f, Loader=yaml.FullLoader)
 import numpy as np
 from torch.utils.data import DataLoader
-from Testdataset import TestDataset
+from src.Testdataset_2D import TestDataset
 import torch
-from mmedit.models.backbones.sr_backbones import DPATISR
-from diagram import reliability_diagram, interval_confidence
+from model_2D.models.backbones.sr_backbones import DPATISR
+from model_3D.models.backbones.sr_backbones import DPATISR_3D
+from src.diagram import reliability_diagram, interval_confidence
 import loss
 def enable_dropout(model):
     """ Function to enable the dropout layers during test-time """
@@ -87,7 +88,7 @@ with torch.no_grad():
     model.eval()
     if config['bayesian']:
         enable_dropout(model)
-    with tqdm(dataloader, desc="Training MANA") as tepoch:
+    with tqdm(dataloader, desc="Testing") as tepoch:
         psnr_list=[]
         ssim_list=[]
         for inp, gt in tepoch:

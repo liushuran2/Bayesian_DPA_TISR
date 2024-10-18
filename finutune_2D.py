@@ -17,12 +17,12 @@ scale = config['factor']
 mkdir(config['save_path'])
 import numpy as np
 from torch.utils.data import DataLoader
-from Traindataset import TrainDataset
-from Testdataset import TestDataset
+from src.Traindataset_2D import TrainDataset
+from srcTestdataset_2D import TestDataset
 import torch
-import loss
-from mmedit.models.backbones.sr_backbones import DPATISR
-from diagram import reliability_diagram, diag_torch
+import src.loss
+from model_2D.models.backbones.sr_backbones import DPATISR
+from src.diagram import reliability_diagram, diag_torch
 def enable_dropout(model):
     """ Function to enable the dropout layers during test-time """
     for m in model.modules():
@@ -125,9 +125,9 @@ def finetune(model, loss_fn, train_dataset, test_dataset, epsilon=0.04, alpha=0.
     count = 0
     for epoch in range(0, config['finetune_epoch']):
         model.train()
-        with tqdm(dataloader, desc="Finetuning MANA") as tepoch:
+        with tqdm(dataloader, desc="Finetuning") as tepoch:
             for inp, gt in tepoch:
-                tepoch.set_description(f"Finetuning MANA--Epoch {epoch} K {k}")
+                tepoch.set_description(f"Finetuning--Epoch {epoch} K {k}")
                 if count==0:
                     optimizer = torch.optim.Adam(filter(lambda p: p.requires_grad, model.module.parameters()), lr=1e-6, betas=(0.5, 0.999))
                     scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=config['finetune_epoch'], eta_min=0, last_epoch=-1)

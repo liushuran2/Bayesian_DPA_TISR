@@ -108,7 +108,7 @@ Before inference with pre-trained model, please carefully edit the [config.yaml]
 
 ### 3. Test models
 ```python
-python test.py --config config.yaml
+python test_2D.py --config config.yaml
 ```
 
 * The "config" sets the training configuration file path.
@@ -130,7 +130,9 @@ Other key parameter are presented in [config.yaml](https://github.com/liushuran2
 ### 3. Start training
 Simply run:
 ```python
-python train.py --config config.yaml
+python train_2D.py --config config.yaml
+or
+python train_3D.py --config config.yaml
 ```
 
 The visualization of training procedure is also provided. Run the following command:
@@ -139,7 +141,7 @@ tensorboard --logdir=tensorboard --port=6006 --host='localhost'
 ```
 
 ### 4. Confidence correction
-Aiming at overcoming the commonly overconfidence problem, user can adopt the algorithm mentioned in our paper to minimize Expected calibration error (ECE) by running:
+Aiming at overcoming the commonly overconfidence problem, user can adopt the algorithm mentioned in our paper to minimize Expected calibration error (ECE) by running (3D version coming soon):
 ```python
 python finetune.py --config config.yaml
 ```
