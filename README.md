@@ -187,3 +187,7 @@ python read_mrc.py
 <p align="center">
 <img src="assert\fig5.jpg" width='600'>
 </p>
+
+<p align="center">
+<img src="assert\fig6.png" width='600'>
+</p>
