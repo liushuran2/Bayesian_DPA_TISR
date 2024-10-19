@@ -143,7 +143,7 @@ tensorboard --logdir=tensorboard --port=6006 --host='localhost'
 ### 4. Confidence correction
 Aiming at overcoming the commonly overconfidence problem, user can adopt the algorithm mentioned in our paper to minimize Expected calibration error (ECE) by running (3D version coming soon):
 ```python
-python finetune.py --config config.yaml
+python finetune_2D.py --config config.yaml
 ```
 
 ## 🎨 Dataset
