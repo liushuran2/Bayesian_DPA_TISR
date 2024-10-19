@@ -26,9 +26,9 @@ This repository is for Bayesian DPA-TISR introduced in the following paper:
 ## 🔧 Install
 ### Our environment
   - Ubuntu 20.04.5
-  - CUDA 11.3.1
+  - CUDA 11.8
   - Python 3.8.13
-  - Pytorch 1.12.1
+  - Pytorch 2.0.0
   - NVIDIA GPU (GeForce RTX 3090) 
 
 ### Quick installation
@@ -49,7 +49,7 @@ Create a virtual environment and install PyTorch. **If your CUDA maximum version
  ```bash
     $ conda create -n DPATISR python=3.8
     $ conda activate DPATISR
-    $ pip install torch==1.12.1+cu113 torchvision==0.13.1+cu113 torchaudio==0.12.1 --extra-index-url https://download.pytorch.org/whl/cu113
+    $ pip install torch==2.0.0 torchvision==0.15.1 torchaudio==2.0.1 --index-url https://download.pytorch.org/whl/cu118
 ```
 **Step 3.**
 To install other dependencies used in our code, simply run the following command.

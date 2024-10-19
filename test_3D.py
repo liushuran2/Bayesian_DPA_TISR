@@ -17,7 +17,7 @@ from torch.utils.data import DataLoader
 from src.Testdataset_3D import TestDataset
 import torch
 from model_3D.models.backbones.sr_backbones import DPATISR_3D
-import src.loss
+from src.loss import lossfun
 import tifffile as tiff
 def enable_dropout(model):
     """ Function to enable the dropout layers during test-time """
@@ -72,7 +72,7 @@ num_dropout_ensembles = 1
 checkpt=torch.load(config['inference_checkpt'])
 model.module.load_state_dict(checkpt)
 
-loss_fn = loss.lossfun()
+loss_fn = lossfun()
 
 test_dataset = TestDataset(config['test_dataset_path'], scale=2)
 dataloader = DataLoader(dataset=test_dataset,

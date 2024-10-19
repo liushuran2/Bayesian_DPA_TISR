@@ -10,3 +10,4 @@ scipy==1.9.1
 tifffile==2020.10.1
 timm==0.9.7
 tqdm==4.64.1
+requests==2.32.3

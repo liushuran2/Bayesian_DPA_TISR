@@ -69,7 +69,7 @@ for epoch in range(0, config['epoch']):
             optimizer.zero_grad()
             oup = model(inp)
             
-            loss = loss_fn(gt, oup, config['bayesian'])
+            loss = loss_fn(gt, oup, False)
             l1loss = F.l1_loss(gt[:,:,0,::], oup[:,:,0,::])
             loss = loss.mean()
             loss.backward()
@@ -92,7 +92,7 @@ for epoch in range(0, config['epoch']):
                             gt = gt.float().cuda()
                             optimizer.zero_grad()
                             oup = model(inp)
-                            loss = loss_fn(gt, oup, config['bayesian'])
+                            loss = loss_fn(gt, oup, False)
                             loss = loss.mean()
                             valid_list.append(loss.data.cpu())
                 writer.add_scalar('Valid/loss', torch.mean(torch.stack(valid_list)), count / config['N_save_checkpt'])
