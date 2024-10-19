@@ -18,9 +18,9 @@ mkdir(config['save_path'])
 import numpy as np
 from torch.utils.data import DataLoader
 from src.Traindataset_2D import TrainDataset
-from srcTestdataset_2D import TestDataset
+from src.Testdataset_2D import TestDataset
 import torch
-import src.loss
+from src.loss import lossfun
 from model_2D.models.backbones.sr_backbones import DPATISR
 from src.diagram import reliability_diagram, diag_torch
 def enable_dropout(model):
@@ -185,7 +185,7 @@ k2 = start
 deltamag = 0.1
 k_list = []
 absECE_list = []
-loss_fn = loss.lossfun()
+loss_fn = lossfun()
 amp2,_ = finetune(model, loss_fn, train_dataset, test_dataset,
             epsilon=epsilon, alpha=0.1, k=k2)
 k_list.append(k2)
