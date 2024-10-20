@@ -1,6 +1,6 @@
 # Bayesian_DPA_TISR:Time-lapse Image Super-resolution Neural Network with Reliable Confidence Evaluation for Optical Microscopy
 
-Code, representive pretrain model, test data of Bayes_DPA_TISR
+Codes, representative pre-trained models, test data for Bayesian DPA-TISR
 <div align="center">
 
 ✨ [**Method**](#-Method-overview) **|** 🚩 [**Paper**](#-Paper) **|** 🔧 [**Install**](#Install)  **|** 🎨 [**Dataset**](#-Dataset)  **|** 💻 [**Training**](#-Training) **|** 🏰 [**Model Zoo**](#-Model-Zoo)  **|** ⚡ [**Inference**](#-Inference) **|** &#x1F308; [**Results**](#-Results)
@@ -117,7 +117,7 @@ python test_2D.py --config config.yaml
 ## 💻 Training 
 
 ### 1. Prepare the data 
-You can use your own data or download BioTISR below(detailed in [**Dataset**](#-dataset)). 
+You can use your own data or download BioTISR below (detailed in [**Dataset**](#-dataset)). 
 
 ### 2. Edit confiuration
 Before training, please carefully edit the [config.yaml](https://github.com/liushuran2/Bayesian_DPA_TISR/blob/main/config.yaml) file. Some **must-change** parameters are as follows:
@@ -125,7 +125,7 @@ Before training, please carefully edit the [config.yaml](https://github.com/lius
 * *checkpoint_folder* and *checkpoint_name* (the location that checkpoint will be saved in)
 * *tensorboard_folder* (the location that tensorboard log file will be saved in for visualization)
 
-Other key parameter are presented in [config.yaml](https://github.com/liushuran2/Bayesian_DPA_TISR/blob/main/config.yaml) file with , do not change if you don't know what it is.
+Other key parameter are presented in [config.yaml](https://github.com/liushuran2/Bayesian_DPA_TISR/blob/main/config.yaml) file, do not change if you don't know what it is.
 
 ### 3. Start training
 Simply run:
@@ -147,7 +147,7 @@ python finetune_2D.py --config config.yaml
 ```
 
 ## 🎨 Dataset
-We acquired an extensive TISR dataset (BioTISR), of five different biological structures: clathrin-coated pits (CCPs), lysosomes (Lyso), outer mitochondrial membranes (Mito), microtubules (MTs), and F-actin filaments.
+We acquired an extensive TISR dataset ([BioTISR](https://zenodo.org/records/13924484)), of five different biological structures: clathrin-coated pits (CCPs), lysosomes (Lyso), outer mitochondrial membranes (Mito), microtubules (MTs), and F-actin filaments.
 
 Besides, we employed our home-built Multi-SIM system to generate three new 3D time-lapse datasets of microtubule, F-actin, and inner membrane of mitochondria to generate 3D BioTISR.
 
