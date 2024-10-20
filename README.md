@@ -151,7 +151,7 @@ We acquired an extensive TISR dataset ([BioTISR](https://zenodo.org/records/1392
 
 Besides, we employed our home-built Multi-SIM system to generate three new 3D time-lapse datasets of microtubule, F-actin, and inner membrane of mitochondria to generate 3D BioTISR.
 
-BioTISR(3D BioTISR) is now freely available, aiming to provide a high-quality dataset for the community of time-lapse bio-image super-resolution algorithm and advanced SIM reconstruction algorithm developers.
+BioTISR (3D BioTISR) is now freely available, aiming to provide a high-quality dataset for the community of time-lapse bio-image super-resolution algorithm and advanced SIM reconstruction algorithm developers.
 
 Scripts for reading **MRC** file are also provided with the dataset. In this repository, you can find a script named [read_mrc.py](https://github.com/liushuran2/Bayesian_DPA_TISR/blob/main/prepare_data.py) which organizes seperate images into an [hdf5](https://www.hdfgroup.org/solutions/hdf5/) file used in the training and testing for faster loading speed.
 
